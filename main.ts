@@ -5,6 +5,7 @@ namespace SpriteKind {
     export const Arrow = SpriteKind.create()
     export const Hidden_Sprite = SpriteKind.create()
     export const Boss = SpriteKind.create()
+    export const Image = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (Jump_Count <= 2) {
@@ -29,10 +30,11 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         . 1 . . 2 2 2 2 2 2 . e e e . . 
         . . 1 . f f . . f e e e . . . . 
         . . . 1 f f . . e e f . . . . . 
-        . . . . f f 1 e . f f . . . . . 
+        . . . . 1 1 1 e . f f . . . . . 
         . . . . e e e . . e e e . . . . 
         . . . . e e e e . e e e e . . . 
         `)
+    HeroShoot = true
 })
 function startGame () {
     Jump_Count = 9
@@ -380,13 +382,48 @@ function startGame () {
         )
     }
 }
+controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    IsLeft = true
+})
+controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    IsLeft = false
+    mySprite.setImage(img`
+        . . . . 2 2 2 2 2 c 2 2 . . . . . . 
+        . . . 2 c 2 2 c c 2 2 2 2 . . . . . 
+        . . 2 2 2 c c 2 2 c 2 2 c 2 . . . . 
+        . . 2 2 c 2 2 2 2 2 c c 2 2 . . . . 
+        . . . d d d d d f d f d d . . . . . 
+        . . . d d d d d f d f d d . c . . . 
+        . c . . d d d d d d d d . . c . . . 
+        . c . . . d d d d d d . . . c . . . 
+        . c . . . 2 2 2 2 2 2 2 . . c . . . 
+        c c c . . 2 2 2 2 2 2 2 . c c c . . 
+        . c 2 2 2 2 2 2 2 2 2 2 2 2 c d . . 
+        d c 2 2 2 2 2 2 2 2 2 2 2 2 c d . . 
+        d c 2 2 2 2 2 2 2 2 2 2 . . . . . . 
+        . . . . . f f . . . f f . . . . . . 
+        . . . . . f f . . . f f . . . . . . 
+        . . . . . f f . . . f f . . . . . . 
+        . . . . . e e e . . e e e . . . . . 
+        . . . . . e e e e . e e e e . . . . 
+        `)
+})
 controller.A.onEvent(ControllerButtonEvent.Released, function () {
-    dagger = sprites.createProjectileFromSprite(img`
-        . . c . . . . 
-        c c c c c c c 
-        . . c . . . . 
-        `, mySprite, 150, 0)
-    dagger.setFlag(SpriteFlag.AutoDestroy, true)
+    if (IsLeft) {
+        dagger = sprites.createProjectileFromSprite(img`
+            . . . . . c . 
+            c c c c c c c 
+            . . . . . c . 
+            `, mySprite, -150, 0)
+        dagger.setFlag(SpriteFlag.AutoDestroy, true)
+    } else {
+        dagger = sprites.createProjectileFromSprite(img`
+            . . c . . . . 
+            c c c c c c c 
+            . . c . . . . 
+            `, mySprite, 150, 0)
+        dagger.setFlag(SpriteFlag.AutoDestroy, true)
+    }
 })
 sprites.onOverlap(SpriteKind.Arrow, SpriteKind.Enemy, function (sprite, otherSprite) {
     enemyLife += -1
@@ -394,14 +431,6 @@ sprites.onOverlap(SpriteKind.Arrow, SpriteKind.Enemy, function (sprite, otherSpr
         otherSprite.destroy(effects.fire, 500)
         info.changeScoreBy(1)
     }
-})
-controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
-    dagger = sprites.createProjectileFromSprite(img`
-        . . c . . . . 
-        c c c c c c c 
-        . . c . . . . 
-        `, mySprite, 150, 0)
-    dagger.setFlag(SpriteFlag.AutoDestroy, true)
 })
 controller.B.onEvent(ControllerButtonEvent.Released, function () {
     mySprite.setImage(img`
@@ -424,25 +453,48 @@ controller.B.onEvent(ControllerButtonEvent.Released, function () {
         . . . . . e e e . . e e e . . . . . 
         . . . . . e e e e . e e e e . . . . 
         `)
-    Arrow = sprites.createProjectileFromSprite(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . f . 
-        . . . . . . . . e e e e e e e f 
-        e e e e e e e e . . . . . . f . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, mySprite, 50, 0)
-    Arrow.setKind(SpriteKind.Arrow)
+    if (IsLeft) {
+        Arrow = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . f . . . . . . . . . . . . . . 
+            f e e e e e e e . . . . . . . . 
+            . f . . . . . . e e e e e e e e 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, mySprite, -50, 0)
+        Arrow.setKind(SpriteKind.Arrow)
+    } else {
+        Arrow = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . f . 
+            . . . . . . . . e e e e e e e f 
+            e e e e e e e e . . . . . . f . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, mySprite, 50, 0)
+        Arrow.setKind(SpriteKind.Arrow)
+    }
+    HeroShoot = false
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprite.destroy(effects.spray, 500)
@@ -453,7 +505,6 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
         pause(5000)
         story.printDialog("Enemies spawn faster now", 75, 55, 50, 150, 11, 12, story.TextSpeed.Slow)
         pause(5000)
-        story.printDialog("Good Job", 75, 55, 50, 150, 11, 12, story.TextSpeed.Slow)
         timebetweenSpawn = 100
         sprites.setDataImage(Enemy_, "HELLO", sprites.castle.tilePath5)
     }
@@ -462,16 +513,42 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     info.changeLifeBy(-1)
     otherSprite.destroy()
 })
+let BossMade = false
 let Location: tiles.Location = null
 let Enemy_: Sprite = null
 let Arrow: Sprite = null
 let enemyLife = 0
 let dagger: Sprite = null
+let IsLeft = false
 let Propeller: Sprite = null
 let hiddenSprite: Sprite = null
 let timebetweenSpawn = 0
+let HeroShoot = false
 let mySprite: Sprite = null
 let Jump_Count = 0
+let mySprite2 = sprites.create(img`
+    . . . 2 2 2 2 2 c 2 2 . . . . . 
+    . . 2 c 2 2 c c 2 2 2 2 . . . . 
+    . 2 2 2 c c 2 2 c 2 2 c 2 . . . 
+    . 2 2 c 2 2 2 2 2 c c 2 2 . . . 
+    . . d d d d d f d f d d . . . . 
+    . . d d d d d f d f d d . . . . 
+    . . . d 1 1 1 e d d d . . . . . 
+    . . . 1 d d d d e e . . . . . . 
+    . . 1 . 2 2 2 2 2 e e e . . . . 
+    . 1 . . 2 2 2 2 2 2 . f e e d . 
+    1 d 2 2 2 e e e e e e e f e e d 
+    1 e e e e 2 2 2 2 2 2 f 2 e e d 
+    . 1 . . 2 2 2 2 2 2 . e e e . . 
+    . . 1 . f f . . f e e e . . . . 
+    . . . 1 f f . . e e f . . . . . 
+    . . . . 1 1 1 e . f f . . . . . 
+    . . . . e e e . . e e e . . . . 
+    . . . . e e e e . e e e e . . . 
+    `, SpriteKind.Image)
+mySprite2.image.flipX()
+let BowImage = mySprite2.image
+mySprite2.destroy()
 startGame()
 story.printDialog("Defeat the Enemies", 75, 55, 50, 150, 11, 12, story.TextSpeed.Slow)
 controller.vibrate(5000)
@@ -590,6 +667,7 @@ game.onUpdate(function () {
             . . . . . . . e e e e e e e e . . e e e e e e e e . . . . . . . . . . . 
             . . . . . . e e e e e e e e e . e e e e e e e e e . . . . . . . . . . . 
             `)
+        BossMade = true
     }
 })
 game.onUpdate(function () {
@@ -603,32 +681,36 @@ game.onUpdate(function () {
     }
 })
 game.onUpdateInterval(timebetweenSpawn, function () {
-    Enemy_ = sprites.create(img`
-        . . . . 7 7 7 7 7 c 7 7 . . . . . . 
-        . . . 7 c 7 7 c c 7 7 7 7 . . . . . 
-        . . 7 7 7 c c 7 7 c 7 7 c 7 . . . . 
-        . . 7 7 c 7 7 7 7 7 c c 7 7 . . . . 
-        . . . d d f d f d d d d d . . . . . 
-        . . . d d f d f d d d d d . c . . . 
-        . c . . d d d d d d d d . . c . . . 
-        . c . . . d d d d d d . . . c . . . 
-        . c . . . 7 7 7 7 7 7 7 . . c . . . 
-        c c c . . 7 7 7 7 7 7 7 . c c c . . 
-        . c 7 7 7 7 7 7 7 7 7 7 7 7 c d . . 
-        d c 7 7 7 7 7 7 7 7 7 7 7 7 c d . . 
-        d c 7 7 7 7 7 7 7 7 7 7 . . . . . . 
-        . . . . . f f . . . f f . . . . . . 
-        . . . . . f f . . . f f . . . . . . 
-        . . . . . f f . . . f f . . . . . . 
-        . . . . e e e . . e e e . . . . . . 
-        . . . e e e e . e e e e . . . . . . 
-        `, SpriteKind.Enemy)
-    Enemy_.setPosition(160, randint(0, 120))
-    enemyLife = 3
-    controller.player2.moveSprite(Enemy_, 0, 0)
-    Enemy_.setVelocity(randint(-50, -100), 350)
-    Enemy_.ay = 350
+    if (!(BossMade)) {
+        Enemy_ = sprites.create(img`
+            . . . . 7 7 7 7 7 c 7 7 . . . . . . 
+            . . . 7 c 7 7 c c 7 7 7 7 . . . . . 
+            . . 7 7 7 c c 7 7 c 7 7 c 7 . . . . 
+            . . 7 7 c 7 7 7 7 7 c c 7 7 . . . . 
+            . . . d d f d f d d d d d . . . . . 
+            . . . d d f d f d d d d d . c . . . 
+            . c . . d d d d d d d d . . c . . . 
+            . c . . . d d d d d d . . . c . . . 
+            . c . . . 7 7 7 7 7 7 7 . . c . . . 
+            c c c . . 7 7 7 7 7 7 7 . c c c . . 
+            . c 7 7 7 7 7 7 7 7 7 7 7 7 c d . . 
+            d c 7 7 7 7 7 7 7 7 7 7 7 7 c d . . 
+            d c 7 7 7 7 7 7 7 7 7 7 . . . . . . 
+            . . . . . f f . . . f f . . . . . . 
+            . . . . . f f . . . f f . . . . . . 
+            . . . . . f f . . . f f . . . . . . 
+            . . . . e e e . . e e e . . . . . . 
+            . . . e e e e . e e e e . . . . . . 
+            `, SpriteKind.Enemy)
+        Enemy_.setPosition(160, randint(0, 120))
+        enemyLife = 3
+        controller.player2.moveSprite(Enemy_, 0, 0)
+        Enemy_.setVelocity(randint(-50, -100), 350)
+        Enemy_.ay = 350
+    }
 })
 forever(function () {
-	
+    if (BossMade) {
+        pause(randint(0, 10))
+    }
 })
