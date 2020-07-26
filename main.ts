@@ -14,27 +14,32 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    mySprite.setImage(img`
-        . . . 2 2 2 2 2 c 2 2 . . . . . 
-        . . 2 c 2 2 c c 2 2 2 2 . . . . 
-        . 2 2 2 c c 2 2 c 2 2 c 2 . . . 
-        . 2 2 c 2 2 2 2 2 c c 2 2 . . . 
-        . . d d d d d f d f d d . . . . 
-        . . d d d d d f d f d d . . . . 
-        . . . d 1 1 1 e d d d . . . . . 
-        . . . 1 d d d d e e . . . . . . 
-        . . 1 . 2 2 2 2 2 e e e . . . . 
-        . 1 . . 2 2 2 2 2 2 . f e e d . 
-        1 d 2 2 2 e e e e e e e f e e d 
-        1 e e e e 2 2 2 2 2 2 f 2 e e d 
-        . 1 . . 2 2 2 2 2 2 . e e e . . 
-        . . 1 . f f . . f e e e . . . . 
-        . . . 1 f f . . e e f . . . . . 
-        . . . . 1 1 1 e . f f . . . . . 
-        . . . . e e e . . e e e . . . . 
-        . . . . e e e e . e e e e . . . 
-        `)
-    HeroShoot = true
+    if (IsLeft) {
+        mySprite.setImage(LeftBowImage)
+        HeroShoot = true
+    } else if (IsLeft == false) {
+        mySprite.setImage(img`
+            . . . 2 2 2 2 2 c 2 2 . . . . . 
+            . . 2 c 2 2 c c 2 2 2 2 . . . . 
+            . 2 2 2 c c 2 2 c 2 2 c 2 . . . 
+            . 2 2 c 2 2 2 2 2 c c 2 2 . . . 
+            . . d d d d d f d f d d . . . . 
+            . . d d d d d f d f d d . . . . 
+            . . . d 1 1 1 e d d d . . . . . 
+            . . . 1 d d d d e e . . . . . . 
+            . . 1 . 2 2 2 2 2 e e e . . . . 
+            . 1 . . 2 2 2 2 2 2 . f e e d . 
+            1 d 2 2 2 e e e e e e e f e e d 
+            1 e e e e 2 2 2 2 2 2 f 2 e e d 
+            . 1 . . 2 2 2 2 2 2 . e e e . . 
+            . . 1 . f f . . f e e e . . . . 
+            . . . 1 f f . . e e f . . . . . 
+            . . . . 1 1 1 e . f f . . . . . 
+            . . . . e e e . . e e e . . . . 
+            . . . . e e e e . e e e e . . . 
+            `)
+        HeroShoot = true
+    }
 })
 function startGame () {
     Jump_Count = 9
@@ -519,42 +524,14 @@ let Enemy_: Sprite = null
 let Arrow: Sprite = null
 let enemyLife = 0
 let dagger: Sprite = null
-let IsLeft = false
 let Propeller: Sprite = null
 let hiddenSprite: Sprite = null
 let timebetweenSpawn = 0
 let HeroShoot = false
+let IsLeft = false
 let mySprite: Sprite = null
 let Jump_Count = 0
-let mySprite2 = sprites.create(img`
-    . . . 2 2 2 2 2 c 2 2 . . . . . 
-    . . 2 c 2 2 c c 2 2 2 2 . . . . 
-    . 2 2 2 c c 2 2 c 2 2 c 2 . . . 
-    . 2 2 c 2 2 2 2 2 c c 2 2 . . . 
-    . . d d d d d f d f d d . . . . 
-    . . d d d d d f d f d d . . . . 
-    . . . d 1 1 1 e d d d . . . . . 
-    . . . 1 d d d d e e . . . . . . 
-    . . 1 . 2 2 2 2 2 e e e . . . . 
-    . 1 . . 2 2 2 2 2 2 . f e e d . 
-    1 d 2 2 2 e e e e e e e f e e d 
-    1 e e e e 2 2 2 2 2 2 f 2 e e d 
-    . 1 . . 2 2 2 2 2 2 . e e e . . 
-    . . 1 . f f . . f e e e . . . . 
-    . . . 1 f f . . e e f . . . . . 
-    . . . . 1 1 1 e . f f . . . . . 
-    . . . . e e e . . e e e . . . . 
-    . . . . e e e e . e e e e . . . 
-    `, SpriteKind.Image)
-mySprite2.image.flipX()
-let BowImage = mySprite2.image
-mySprite2.destroy()
-startGame()
-story.printDialog("Defeat the Enemies", 75, 55, 50, 150, 11, 12, story.TextSpeed.Slow)
-controller.vibrate(5000)
-color.setPalette(
-color.DIY
-)
+let LeftBowImage: Image = null
 let Boss = sprites.create(img`
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
@@ -607,8 +584,59 @@ let Boss = sprites.create(img`
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
     `, SpriteKind.Boss)
+LeftBowImage = img`
+    . . . 2 2 2 2 2 c 2 2 . . . . . 
+    . . 2 c 2 2 c c 2 2 2 2 . . . . 
+    . 2 2 2 c c 2 2 c 2 2 c 2 . . . 
+    . 2 2 c 2 2 2 2 2 c c 2 2 . . . 
+    . . d d d d d f d f d d . . . . 
+    . . d d d d d f d f d d . . . . 
+    . . . d 1 1 1 e d d d . . . . . 
+    . . . 1 d d d d e e . . . . . . 
+    . . 1 . 2 2 2 2 2 e e e . . . . 
+    . 1 . . 2 2 2 2 2 2 . f e e d . 
+    1 d 2 2 2 e e e e e e e f e e d 
+    1 e e e e 2 2 2 2 2 2 f 2 e e d 
+    . 1 . . 2 2 2 2 2 2 . e e e . . 
+    . . 1 . f f . . f e e e . . . . 
+    . . . 1 f f . . e e f . . . . . 
+    . . . . 1 1 1 e . f f . . . . . 
+    . . . . e e e . . e e e . . . . 
+    . . . . e e e e . e e e e . . . 
+    `
+let _0 = 0
+LeftBowImage.flipX()
+startGame()
+story.printDialog("Defeat the Enemies", 75, 55, 50, 150, 11, 12, story.TextSpeed.Slow)
+color.setPalette(
+color.DIY
+)
 game.onUpdate(function () {
     Location = tiles.locationOfSprite(mySprite)
+})
+game.onUpdate(function () {
+    if (mySprite.image == img`
+        . . . 2 2 2 2 2 c 2 2 . . . . . 
+        . . 2 c 2 2 c c 2 2 2 2 . . . . 
+        . 2 2 2 c c 2 2 c 2 2 c 2 . . . 
+        . 2 2 c 2 2 2 2 2 c c 2 2 . . . 
+        . . d d d d d f d f d d . . . . 
+        . . d d d d d f d f d d . . . . 
+        . . . d 1 1 1 e d d d . . . . . 
+        . . . 1 d d d d e e . . . . . . 
+        . . 1 . 2 2 2 2 2 e e e . . . . 
+        . 1 . . 2 2 2 2 2 2 . f e e d . 
+        1 d 2 2 2 e e e e e e e f e e d 
+        1 e e e e 2 2 2 2 2 2 f 2 e e d 
+        . 1 . . 2 2 2 2 2 2 . e e e . . 
+        . . 1 . f f . . f e e e . . . . 
+        . . . 1 f f . . e e f . . . . . 
+        . . . . 1 1 1 e . f f . . . . . 
+        . . . . e e e . . e e e . . . . 
+        . . . . e e e e . e e e e . . . 
+        ` && controller.left.isPressed()) {
+        mySprite.setImage(LeftBowImage)
+    }
 })
 game.onUpdate(function () {
     if (info.score() == 50) {
