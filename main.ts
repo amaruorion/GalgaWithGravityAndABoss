@@ -7,12 +7,25 @@ namespace SpriteKind {
     export const Boss = SpriteKind.create()
     export const Image = SpriteKind.create()
     export const BoosProjectile = SpriteKind.create()
+    export const BossBomb = SpriteKind.create()
 }
+namespace StatusBarKind {
+    export const BossHealth = StatusBarKind.create()
+}
+sprites.onOverlap(SpriteKind.Arrow, SpriteKind.Boss, function (sprite, otherSprite) {
+    sprite.destroy(effects.spray, 500)
+    statusbar.value += -1
+})
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (Jump_Count <= 2) {
         mySprite.vy = -130
         Jump_Count += 1
     }
+})
+statusbars.onZero(StatusBarKind.BossHealth, function (status) {
+    Boss2.ay = 1000
+    Boss2.destroy(effects.fire, 1000)
+    Boss2.destroy()
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     if (IsLeft) {
@@ -311,7 +324,7 @@ function startGame () {
         `)
     controller.moveSprite(mySprite, 100, 0)
     mySprite.setFlag(SpriteFlag.StayInScreen, true)
-    tiles.setTilemap(tiles.createTilemap(hex`0a000900000000000000000000000000000000000000000000000002020000000000000000010100000000000002020000000000000000010100000000000000000000000000000000000202020202020202020202020202020202020202`, img`
+    tiles.setTilemap(tiles.createTilemap(hex`0a000900000000000000000000000000000000000000000000000001010000000000000000000000000000000001010000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101`, img`
         . . . . . . . . . . 
         . . . . . . . . . . 
         . . . 2 2 . . . . . 
@@ -321,73 +334,17 @@ function startGame () {
         . . . . . . . . . . 
         2 2 2 2 2 2 2 2 2 2 
         . . . . . . . . . . 
-        `, [myTiles.transparency16,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
+        `, [myTiles.transparency16,myTiles.tile4], TileScale.Sixteen))
     mySprite.ay = 350
     info.setLife(20)
-    effects.clouds.startScreenEffect()
-    for (let value of tiles.getTilesByType(myTiles.tile3)) {
-        Propeller = sprites.create(img`
-            . . . . . . . 1 1 . . . . . . . 
-            . . . . . . . 1 1 . . . . . . . 
-            6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
-            6 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
-            6 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, SpriteKind.Player)
-        tiles.placeOnTile(Propeller, value)
-        tiles.setTileAt(value, myTiles.transparency16)
-        animation.runImageAnimation(
-        Propeller,
-        [img`
-            . . . . . . . 1 1 . . . . . . . 
-            . . . . . . . 1 1 . . . . . . . 
-            . . . . . . . 1 1 . . . . . . . 
-            . . . . . . . 1 1 . . . . . . . 
-            6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
-            7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
-            7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `,img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `],
-        50,
-        true
-        )
-    }
 }
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Boss, function (sprite, otherSprite) {
+    sprite.destroy(effects.spray, 500)
+    statusbar.value += -1
+})
+sprites.onDestroyed(SpriteKind.Boss, function (sprite) {
+    game.over(true)
+})
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     IsLeft = true
 })
@@ -440,7 +397,7 @@ sprites.onOverlap(SpriteKind.Arrow, SpriteKind.Enemy, function (sprite, otherSpr
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.BoosProjectile, function (sprite, otherSprite) {
     info.changeLifeBy(-2)
-    otherSprite.destroy()
+    otherSprite.destroy(effects.spray, 500)
 })
 controller.B.onEvent(ControllerButtonEvent.Released, function () {
     mySprite.setImage(img`
@@ -506,6 +463,10 @@ controller.B.onEvent(ControllerButtonEvent.Released, function () {
     }
     HeroShoot = false
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.BossBomb, function (sprite, otherSprite) {
+    otherSprite.destroy(effects.fire, 500)
+    info.changeLifeBy(-2)
+})
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprite.destroy(effects.spray, 500)
     otherSprite.destroy(effects.fire, 500)
@@ -525,22 +486,24 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 })
 let projectile: Sprite = null
 let BossAttackGenerator = 0
+let mySprite2: Sprite = null
 let BossMade = false
 let Location: tiles.Location = null
 let Enemy_: Sprite = null
 let Arrow2: Sprite = null
 let enemyLife = 0
 let dagger: Sprite = null
-let Propeller: Sprite = null
 let hiddenSprite: Sprite = null
 let timebetweenSpawn = 0
 let HeroShoot = false
 let IsLeft = false
 let mySprite: Sprite = null
 let Jump_Count = 0
+let statusbar: StatusBarSprite = null
 let LeftBowImage: Image = null
+let Boss2: Sprite = null
 let _0 = 0
-let Boss2 = sprites.create(img`
+Boss2 = sprites.create(img`
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
@@ -614,7 +577,7 @@ LeftBowImage = img`
     `
 LeftBowImage.flipX()
 startGame()
-let TimeBetweenBossAttacking = 500
+let TimeBetweenBossAttacking = 1000
 story.printDialog("Defeat the Enemies", 75, 55, 50, 150, 11, 12, story.TextSpeed.Slow)
 color.setPalette(
 color.DIY
@@ -652,58 +615,67 @@ game.onUpdate(function () {
         tiles.placeOnTile(Boss2, tiles.getTileLocation(9, 6))
         Boss2.y += -17
         Boss2.setImage(img`
-            . . . . . . . . . . 7 c 7 c c 7 7 7 c c c c 7 c c 7 . . . . . . . . . . 
-            . . . . . . . . . c 7 7 c 7 7 c c c 7 7 7 7 c 7 7 c 7 . . . . . . . . . 
-            . . . . . . . . 7 7 c c 7 c 7 7 7 7 c c c c 7 c c 7 c c . . . . . . . . 
-            . . . . . . . 7 c c 7 7 7 7 c c c c 7 7 7 7 c 7 7 c 7 7 7 . . . . . . . 
-            . . . . . . 7 c 7 7 c c c c 7 7 7 7 c 7 c c 7 c c 7 c c 7 7 . . . . . . 
-            . . . . . . 7 7 c c 7 7 7 7 c c c c 7 c 7 7 c 7 7 c 7 7 c 7 . . . . . . 
-            . . . . . . . . d d d f d f d d d d d d d d d d d d d d . . . . . . . . 
-            . . . . . . . . . d d f d f d d d d d d d d d d d d d . . . . . . . . . 
-            . . . . . . . . . . d d d d d d d d d d d d d d d d . . . . . . . . . . 
-            . . . c . . . . . . . d d d d d d d d d d d d d d . . . . . . . c . . . 
-            . . . c . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . c . . . 
-            . . . c . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . c . . . 
-            . . c b c . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . c b c . . 
-            . . c b c . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . c b c . . 
-            . . c b c . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . c b c . . 
-            . . c a c . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . c a c . . 
-            . c a f a c . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . c a f a c . 
-            . . d f d 7 7 . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . 7 7 d f d . . 
-            . . d c d 7 7 7 7 . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . 7 7 7 7 d c d . . 
-            . . d c d 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 d c d . . 
-            . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . 
-            . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . . f f f f f . . . . . f f f f f . . . . . . . . . . . 
-            . . . . . . . . . e e e e e e . . . . e e e e e e . . . . . . . . . . . 
-            . . . . . . . . e e e e e e e . . . e e e e e e e . . . . . . . . . . . 
-            . . . . . . . e e e e e e e e . . e e e e e e e e . . . . . . . . . . . 
-            . . . . . . e e e e e e e e e . e e e e e e e e e . . . . . . . . . . . 
+            . . . . . . . . . . . 7 7 c c c c 7 7 7 7 7 7 7 7 7 c . . . . . . . . . 
+            . . . . . . . . . . 7 c c 7 7 7 7 c c c c c c c c c 7 c . . . . . . . . 
+            . . . . . . . . . 7 c 7 7 c 7 7 c c 7 7 7 7 7 c 7 7 7 c 7 . . . . . . . 
+            . . . . . . . . 7 c 7 7 c 7 c c 7 7 c c c c c 7 c c 7 7 c 7 . . . . . . 
+            . . . . . . . 7 c c c 7 7 c 7 7 c c c 7 7 7 7 c 7 7 c 7 7 c 7 . . . . . 
+            . . . . . . . 7 c 7 7 c c 7 c 7 7 7 7 c c c c 7 c c 7 c c 7 c . . . . . 
+            . . . . . . . c 7 c c 7 7 7 7 c c c c 7 7 7 7 c 7 7 c 7 7 c c . . . . . 
+            . . . . . . . 7 c 7 7 c c c c 7 7 7 7 c 7 c c 7 c c 7 c c 7 7 . . . . . 
+            . . . . . . . c 7 c c 7 7 7 7 c c c c 7 c 7 7 c 7 7 c 7 7 c 7 . . . . . 
+            . . . . . . . . . d d d f d f d d d d d d d d d d d d d d . . . . . . . 
+            . . . . . . . . . . d d f d f d d d d d d d d d d d d d . . . . . . . . 
+            . . . . . . . . . . . d d d d d d d d d d d d d d d d . . . . . . . . . 
+            . . . . c . . . . . . . d d d d d d d d d d d d d d . . . . . . . c . . 
+            . . . . c . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . c . . 
+            . . . . c . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . c . . 
+            . . . c b c . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . c b c . 
+            . . . c b c . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . c b c . 
+            . . . c b c . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . c b c . 
+            . . . c a c . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . c a c . 
+            . . c a f a c . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . c a f a c 
+            . . . d f d 7 7 . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . 7 7 d f d . 
+            . . . d c d 7 7 7 7 . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . 7 7 7 7 d c d . 
+            . . . d c d 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 d c d . 
+            . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . 
+            . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . e e e e e . . . . e e e e e e . . . . . . . . . . 
+            . . . . . . . . . . e e e e e e . . . e e e e e e e . . . . . . . . . . 
+            . . . . . . . . . e e e e e e e . . e e e e e e e e . . . . . . . . . . 
+            . . . . . . . . e e e e e e e e . e e e e e e e e e . . . . . . . . . . 
             `)
         BossMade = true
+        statusbar = statusbars.create(100, 8, StatusBarKind.BossHealth)
+        statusbar.setColor(2, 7)
+        statusbar.positionDirection(CollisionDirection.Top)
+        statusbar.setLabel("Boss")
     }
 })
 game.onUpdate(function () {
@@ -714,6 +686,32 @@ game.onUpdate(function () {
 game.onUpdate(function () {
     if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
         Jump_Count = 0
+    }
+})
+game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking + 1000), function () {
+    if (BossMade) {
+        if (statusbar.value < 26) {
+            mySprite2 = sprites.create(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . 7 7 7 7 7 7 7 7 . . . . 
+                . . . . 7 7 7 7 7 7 7 7 . . . . 
+                . . . . 7 7 7 7 7 7 7 7 . . . . 
+                `, SpriteKind.BossBomb)
+            mySprite2.lifespan = 200
+            tiles.placeOnTile(mySprite2, tiles.getTileLocation(randint(1, 6), 6))
+        }
     }
 })
 game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking + 500), function () {
@@ -796,9 +794,6 @@ game.onUpdateInterval(timebetweenSpawn, function () {
         Enemy_.setVelocity(randint(-50, -100), 350)
         Enemy_.ay = 350
     }
-})
-forever(function () {
-    music.playMelody("E F A F E G A A ", 300)
 })
 forever(function () {
     if (BossMade) {
