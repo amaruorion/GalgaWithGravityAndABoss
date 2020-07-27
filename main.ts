@@ -613,7 +613,7 @@ game.onUpdate(function () {
     if (info.score() == 50) {
         story.printDialog("Boss Fight", 75, 55, 50, 150, 2, 15, story.TextSpeed.Slow)
         tiles.placeOnTile(Boss2, tiles.getTileLocation(9, 6))
-        Boss2.y += -17
+        Boss2.y += -21
         Boss2.setImage(img`
             . . . . . . . . . . . 7 7 c c c c 7 7 7 7 7 7 7 7 7 c . . . . . . . . . 
             . . . . . . . . . . 7 c c 7 7 7 7 c c c c c c c c c 7 c . . . . . . . . 
@@ -652,6 +652,11 @@ game.onUpdate(function () {
             . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
             . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
             . . . . . . . . . . . . 7 7 7 7 7 7 7 7 7 7 7 7 7 7 . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
+            . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
             . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
             . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
             . . . . . . . . . . . . f f f f . . . . . f f f f f . . . . . . . . . . 
@@ -709,7 +714,7 @@ game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking
                 . . . . 7 7 7 7 7 7 7 7 . . . . 
                 . . . . 7 7 7 7 7 7 7 7 . . . . 
                 `, SpriteKind.BossBomb)
-            mySprite2.lifespan = 200
+            mySprite2.lifespan = 500
             tiles.placeOnTile(mySprite2, tiles.getTileLocation(randint(1, 6), 6))
         }
     }
