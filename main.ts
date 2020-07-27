@@ -1,6 +1,3 @@
-enum RadioMessage {
-    message1 = 49434
-}
 namespace SpriteKind {
     export const Arrow = SpriteKind.create()
     export const Hidden_Sprite = SpriteKind.create()
@@ -23,7 +20,7 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 statusbars.onZero(StatusBarKind.BossHealth, function (status) {
-    Boss2.ay = 1000
+    Boss2.ay = 1000000
     Boss2.destroy(effects.fire, 1000)
     Boss2.destroy()
 })
@@ -322,19 +319,18 @@ function startGame () {
         9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 
         9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 
         `)
-    controller.moveSprite(mySprite, 100, 0)
-    mySprite.setFlag(SpriteFlag.StayInScreen, true)
-    tiles.setTilemap(tiles.createTilemap(hex`0a000900000000000000000000000000000000000000000000000001010000000000000000000000000000000001010000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101`, img`
+    tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000000000000000000000000010000000000000000000000000000000000000000000101000000000000000000000000000000000000000000000000000001010101010101010101`, img`
         . . . . . . . . . . 
         . . . . . . . . . . 
-        . . . 2 2 . . . . . 
+        2 . . . . . . . . . 
         . . . . . . . . . . 
-        . 2 2 . . . . . . . 
+        . . 2 2 . . . . . . 
         . . . . . . . . . . 
         . . . . . . . . . . 
         2 2 2 2 2 2 2 2 2 2 
-        . . . . . . . . . . 
         `, [myTiles.transparency16,myTiles.tile4], TileScale.Sixteen))
+    controller.moveSprite(mySprite, 100, 0)
+    mySprite.setFlag(SpriteFlag.StayInScreen, true)
     mySprite.ay = 350
     info.setLife(20)
 }
@@ -477,7 +473,6 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
         story.printDialog("Enemies spawn faster now", 75, 55, 50, 150, 11, 12, story.TextSpeed.Slow)
         pause(5000)
         timebetweenSpawn = 100
-        sprites.setDataImage(Enemy_, "HELLO", sprites.castle.tilePath5)
     }
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
@@ -487,9 +482,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 let projectile: Sprite = null
 let BossAttackGenerator = 0
 let mySprite2: Sprite = null
+let Enemy_: Sprite = null
 let BossMade = false
 let Location: tiles.Location = null
-let Enemy_: Sprite = null
 let Arrow2: Sprite = null
 let enemyLife = 0
 let dagger: Sprite = null
@@ -503,6 +498,9 @@ let statusbar: StatusBarSprite = null
 let LeftBowImage: Image = null
 let Boss2: Sprite = null
 let _0 = 0
+enum RadioMessage {
+    message1 = 49434
+}
 Boss2 = sprites.create(img`
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
@@ -610,10 +608,10 @@ game.onUpdate(function () {
     }
 })
 game.onUpdate(function () {
-    if (info.score() == 50) {
+    if (info.score() == 75) {
         story.printDialog("Boss Fight", 75, 55, 50, 150, 2, 15, story.TextSpeed.Slow)
         tiles.placeOnTile(Boss2, tiles.getTileLocation(9, 6))
-        Boss2.y += -21
+        Boss2.y += -24
         Boss2.setImage(img`
             . . . . . . . . . . . 7 7 c c c c 7 7 7 7 7 7 7 7 7 c . . . . . . . . . 
             . . . . . . . . . . 7 c c 7 7 7 7 c c c c c c c c c 7 c . . . . . . . . 
@@ -714,7 +712,7 @@ game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking
                 . . . . 7 7 7 7 7 7 7 7 . . . . 
                 . . . . 7 7 7 7 7 7 7 7 . . . . 
                 `, SpriteKind.BossBomb)
-            mySprite2.lifespan = 500
+            mySprite2.lifespan = 200
             tiles.placeOnTile(mySprite2, tiles.getTileLocation(randint(1, 6), 6))
         }
     }
