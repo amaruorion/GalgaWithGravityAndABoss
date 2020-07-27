@@ -459,7 +459,7 @@ controller.B.onEvent(ControllerButtonEvent.Released, function () {
         . . . . . e e e e . e e e e . . . . 
         `)
     if (IsLeft) {
-        Arrow = sprites.createProjectileFromSprite(img`
+        Arrow2 = sprites.createProjectileFromSprite(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -477,9 +477,9 @@ controller.B.onEvent(ControllerButtonEvent.Released, function () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `, mySprite, -50, 0)
-        Arrow.setKind(SpriteKind.Arrow)
+        Arrow2.setKind(SpriteKind.Arrow)
     } else {
-        Arrow = sprites.createProjectileFromSprite(img`
+        Arrow2 = sprites.createProjectileFromSprite(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -497,7 +497,7 @@ controller.B.onEvent(ControllerButtonEvent.Released, function () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `, mySprite, 50, 0)
-        Arrow.setKind(SpriteKind.Arrow)
+        Arrow2.setKind(SpriteKind.Arrow)
     }
     HeroShoot = false
 })
@@ -518,10 +518,12 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     info.changeLifeBy(-1)
     otherSprite.destroy()
 })
+let projectile: Sprite = null
+let BossAttackGenerator = 0
 let BossMade = false
 let Location: tiles.Location = null
 let Enemy_: Sprite = null
-let Arrow: Sprite = null
+let Arrow2: Sprite = null
 let enemyLife = 0
 let dagger: Sprite = null
 let Propeller: Sprite = null
@@ -532,7 +534,8 @@ let IsLeft = false
 let mySprite: Sprite = null
 let Jump_Count = 0
 let LeftBowImage: Image = null
-let Boss = sprites.create(img`
+let _0 = 0
+let Boss2 = sprites.create(img`
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
@@ -604,9 +607,9 @@ LeftBowImage = img`
     . . . . e e e . . e e e . . . . 
     . . . . e e e e . e e e e . . . 
     `
-let _0 = 0
 LeftBowImage.flipX()
 startGame()
+let TimeBetweenBossAttacking = 500
 story.printDialog("Defeat the Enemies", 75, 55, 50, 150, 11, 12, story.TextSpeed.Slow)
 color.setPalette(
 color.DIY
@@ -641,9 +644,9 @@ game.onUpdate(function () {
 game.onUpdate(function () {
     if (info.score() == 50) {
         story.printDialog("Boss Fight", 75, 55, 50, 150, 2, 15, story.TextSpeed.Slow)
-        tiles.placeOnTile(Boss, tiles.getTileLocation(9, 6))
-        Boss.y += -17
-        Boss.setImage(img`
+        tiles.placeOnTile(Boss2, tiles.getTileLocation(9, 6))
+        Boss2.y += -17
+        Boss2.setImage(img`
             . . . . . . . . . . 7 c 7 c c 7 7 7 c c c c 7 c c 7 . . . . . . . . . . 
             . . . . . . . . . c 7 7 c 7 7 c c c 7 7 7 7 c 7 7 c 7 . . . . . . . . . 
             . . . . . . . . 7 7 c c 7 c 7 7 7 7 c c c c 7 c c 7 c c . . . . . . . . 
@@ -708,6 +711,58 @@ game.onUpdate(function () {
         Jump_Count = 0
     }
 })
+game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking + 500), function () {
+    if (BossMade) {
+        BossAttackGenerator = randint(1, 2)
+        if (BossAttackGenerator == 1) {
+            projectile = sprites.createProjectileFromSprite(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . 7 7 7 7 7 7 7 7 7 7 7 7 . . 
+                . . 7 d d d d d d d d d d 7 . . 
+                . . 7 d 1 1 1 1 1 1 1 1 d 7 . . 
+                . . 7 d 1 7 7 7 7 7 7 1 d 7 . . 
+                . . 7 d 1 7 d d d d 7 1 d 7 . . 
+                . . 7 d 1 7 d 1 1 d 7 1 d 7 . . 
+                . . 7 d 1 7 d 1 1 d 7 1 d 7 . . 
+                . . 7 d 1 7 d d d d 7 1 d 7 . . 
+                . . 7 d 1 7 7 7 7 7 7 1 d 7 . . 
+                . . 7 d 1 1 1 1 1 1 1 1 d 7 . . 
+                . . 7 d d d d d d d d d d 7 . . 
+                . . 7 7 7 7 7 7 7 7 7 7 7 7 . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, Boss2, randint(0, -100), randint(0, -100))
+        } else if (BossAttackGenerator == 2) {
+            for (let index = 0; index < 4; index++) {
+                Enemy_ = sprites.create(img`
+                    . . . . 7 7 7 7 7 c 7 7 . . . . . . 
+                    . . . 7 c 7 7 c c 7 7 7 7 . . . . . 
+                    . . 7 7 7 c c 7 7 c 7 7 c 7 . . . . 
+                    . . 7 7 c 7 7 7 7 7 c c 7 7 . . . . 
+                    . . . d d f d f d d d d d . . . . . 
+                    . . . d d f d f d d d d d . c . . . 
+                    . c . . d d d d d d d d . . c . . . 
+                    . c . . . d d d d d d . . . c . . . 
+                    . c . . . 7 7 7 7 7 7 7 . . c . . . 
+                    c c c . . 7 7 7 7 7 7 7 . c c c . . 
+                    . c 7 7 7 7 7 7 7 7 7 7 7 7 c d . . 
+                    d c 7 7 7 7 7 7 7 7 7 7 7 7 c d . . 
+                    d c 7 7 7 7 7 7 7 7 7 7 . . . . . . 
+                    . . . . . f f . . . f f . . . . . . 
+                    . . . . . f f . . . f f . . . . . . 
+                    . . . . . f f . . . f f . . . . . . 
+                    . . . . e e e . . e e e . . . . . . 
+                    . . . e e e e . e e e e . . . . . . 
+                    `, SpriteKind.Enemy)
+                Enemy_.setPosition(160, randint(0, 120))
+                enemyLife = 3
+                Enemy_.setVelocity(randint(-50, -100), 350)
+                Enemy_.ay = 350
+            }
+        }
+    }
+})
 game.onUpdateInterval(timebetweenSpawn, function () {
     if (!(BossMade)) {
         Enemy_ = sprites.create(img`
@@ -732,7 +787,6 @@ game.onUpdateInterval(timebetweenSpawn, function () {
             `, SpriteKind.Enemy)
         Enemy_.setPosition(160, randint(0, 120))
         enemyLife = 3
-        controller.player2.moveSprite(Enemy_, 0, 0)
         Enemy_.setVelocity(randint(-50, -100), 350)
         Enemy_.ay = 350
     }
