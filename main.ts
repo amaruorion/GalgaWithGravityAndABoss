@@ -6,6 +6,7 @@ namespace SpriteKind {
     export const Hidden_Sprite = SpriteKind.create()
     export const Boss = SpriteKind.create()
     export const Image = SpriteKind.create()
+    export const BoosProjectile = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (Jump_Count <= 2) {
@@ -437,6 +438,10 @@ sprites.onOverlap(SpriteKind.Arrow, SpriteKind.Enemy, function (sprite, otherSpr
         info.changeScoreBy(1)
     }
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.BoosProjectile, function (sprite, otherSprite) {
+    info.changeLifeBy(-2)
+    otherSprite.destroy()
+})
 controller.B.onEvent(ControllerButtonEvent.Released, function () {
     mySprite.setImage(img`
         . . . . 2 2 2 2 2 c 2 2 . . . . . . 
@@ -718,21 +723,22 @@ game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking
             projectile = sprites.createProjectileFromSprite(img`
                 . . . . . . . . . . . . . . . . 
                 . . . . . . . . . . . . . . . . 
-                . . 7 7 7 7 7 7 7 7 7 7 7 7 . . 
-                . . 7 d d d d d d d d d d 7 . . 
-                . . 7 d 1 1 1 1 1 1 1 1 d 7 . . 
-                . . 7 d 1 7 7 7 7 7 7 1 d 7 . . 
+                . . . . . 7 7 7 7 7 7 . . . . . 
+                . . . 7 7 7 d d d d 7 7 7 . . . 
+                . . . 7 d d 1 1 1 1 d d 7 . . . 
+                . . 7 7 d 1 7 7 7 7 1 d 7 7 . . 
                 . . 7 d 1 7 d d d d 7 1 d 7 . . 
                 . . 7 d 1 7 d 1 1 d 7 1 d 7 . . 
                 . . 7 d 1 7 d 1 1 d 7 1 d 7 . . 
                 . . 7 d 1 7 d d d d 7 1 d 7 . . 
-                . . 7 d 1 7 7 7 7 7 7 1 d 7 . . 
-                . . 7 d 1 1 1 1 1 1 1 1 d 7 . . 
-                . . 7 d d d d d d d d d d 7 . . 
-                . . 7 7 7 7 7 7 7 7 7 7 7 7 . . 
+                . . 7 7 d 1 7 7 7 7 1 d 7 7 . . 
+                . . . 7 d d 1 1 1 1 d d 7 . . . 
+                . . . 7 7 7 d d d d 7 7 7 . . . 
+                . . . . . 7 7 7 7 7 7 . . . . . 
                 . . . . . . . . . . . . . . . . 
                 . . . . . . . . . . . . . . . . 
                 `, Boss2, randint(0, -100), randint(0, -100))
+            projectile.setKind(SpriteKind.BoosProjectile)
         } else if (BossAttackGenerator == 2) {
             for (let index = 0; index < 4; index++) {
                 Enemy_ = sprites.create(img`
@@ -790,6 +796,9 @@ game.onUpdateInterval(timebetweenSpawn, function () {
         Enemy_.setVelocity(randint(-50, -100), 350)
         Enemy_.ay = 350
     }
+})
+forever(function () {
+    music.playMelody("E F A F E G A A ", 300)
 })
 forever(function () {
     if (BossMade) {

@@ -11,7 +11,8 @@
         "mouse": "*",
         "pxt-circuit-playground-character-icons": "github:adafruit/circuit-playground-character-icons#v0.0.8",
         "arcade-sprite-data": "github:microsoft/arcade-sprite-data#v0.0.6",
-        "Color Fading": "github:jwunderl/pxt-color#v0.1.3"
+        "Color Fading": "github:jwunderl/pxt-color#v0.1.3",
+        "sevenseg": "*"
     },
     "files": [
         "main.blocks",
