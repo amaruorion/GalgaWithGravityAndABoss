@@ -343,6 +343,26 @@ sprites.onDestroyed(SpriteKind.Boss, function (sprite) {
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     IsLeft = true
+    mySprite.setImage(img`
+        . . . . 2 2 2 2 2 c 2 2 . . . . . . 
+        . . . 2 c 2 2 c c 2 2 2 2 . . . . . 
+        . . 2 2 2 c c 2 2 c 2 2 c 2 . . . . 
+        . . 2 2 c 2 2 2 2 2 c c 2 2 . . . . 
+        . . . d d f d f d d d d d . . . . . 
+        . . . d d f d f d d d d d . c . . . 
+        . c . . d d d d d d d d . . c . . . 
+        . c . . . d d d d d d . . . c . . . 
+        . c . . . 2 2 2 2 2 2 2 . . c . . . 
+        c c c . . 2 2 2 2 2 2 2 . c c c . . 
+        . c 2 2 2 2 2 2 2 2 2 2 2 2 c d . . 
+        d c 2 2 2 2 2 2 2 2 2 2 2 2 c d . . 
+        d c 2 2 2 2 2 2 2 2 2 2 . . . . . . 
+        . . . . . f f . . . f f . . . . . . 
+        . . . . . f f . . . f f . . . . . . 
+        . . . . . f f . . . f f . . . . . . 
+        . . . . e e e . . e e e . . . . . . 
+        . . . e e e e . e e e e . . . . . . 
+        `)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     IsLeft = false
@@ -498,9 +518,6 @@ let statusbar: StatusBarSprite = null
 let LeftBowImage: Image = null
 let Boss2: Sprite = null
 let _0 = 0
-enum RadioMessage {
-    message1 = 49434
-}
 Boss2 = sprites.create(img`
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
@@ -580,6 +597,27 @@ story.printDialog("Defeat the Enemies", 75, 55, 50, 150, 11, 12, story.TextSpeed
 color.setPalette(
 color.DIY
 )
+let mySprite3 = sprites.create(img`
+    d d d d d d d d d d d d d d d d 
+    d 6 6 6 6 6 6 6 6 6 6 6 6 6 6 c 
+    d 6 6 6 6 6 6 6 6 6 6 6 6 6 6 c 
+    d 6 6 6 6 e e e e e e 6 6 6 6 c 
+    d 6 6 6 e 5 5 5 5 5 5 e 6 6 6 c 
+    d 6 6 6 6 e 5 5 5 5 e 6 6 6 6 c 
+    d 6 6 6 6 e 5 5 5 5 e 6 6 6 6 c 
+    d 6 6 6 6 e 5 5 5 5 e 6 6 6 6 c 
+    d 6 6 6 e 5 5 5 5 5 5 e 6 6 6 c 
+    d 6 6 e 5 5 5 5 5 5 5 5 e 6 6 c 
+    d 6 6 e 5 5 5 5 5 5 5 5 e 6 6 c 
+    d 6 6 6 e 5 5 5 5 5 5 e 6 6 6 c 
+    d 6 6 6 6 e 5 5 5 5 e 6 6 6 6 c 
+    d 6 6 6 6 6 e e e e 6 6 6 6 6 c 
+    d 6 6 6 6 6 6 6 6 6 6 6 6 6 6 c 
+    d c c c c c c c c c c c c c c c 
+    `, SpriteKind.Player)
+game.onUpdate(function () {
+	
+})
 game.onUpdate(function () {
     Location = tiles.locationOfSprite(mySprite)
 })
@@ -611,7 +649,7 @@ game.onUpdate(function () {
     if (info.score() == 75) {
         story.printDialog("Boss Fight", 75, 55, 50, 150, 2, 15, story.TextSpeed.Slow)
         tiles.placeOnTile(Boss2, tiles.getTileLocation(9, 6))
-        Boss2.y += -24
+        Boss2.y += -22
         Boss2.setImage(img`
             . . . . . . . . . . . 7 7 c c c c 7 7 7 7 7 7 7 7 7 c . . . . . . . . . 
             . . . . . . . . . . 7 c c 7 7 7 7 c c c c c c c c c 7 c . . . . . . . . 
@@ -694,26 +732,70 @@ game.onUpdate(function () {
 game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking + 1000), function () {
     if (BossMade) {
         if (statusbar.value < 26) {
-            mySprite2 = sprites.create(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . 7 7 7 7 7 7 7 7 . . . . 
-                . . . . 7 7 7 7 7 7 7 7 . . . . 
-                . . . . 7 7 7 7 7 7 7 7 . . . . 
-                `, SpriteKind.BossBomb)
-            mySprite2.lifespan = 200
-            tiles.placeOnTile(mySprite2, tiles.getTileLocation(randint(1, 6), 6))
+            if (Math.percentChance(20)) {
+                mySprite2 = sprites.create(img`
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . 7 7 7 7 7 7 7 7 . . . . 
+                    . . . . 7 7 7 7 7 7 7 7 . . . . 
+                    . . . . 7 7 7 7 7 7 7 7 . . . . 
+                    `, SpriteKind.BossBomb)
+                mySprite2.lifespan = 500
+                tiles.placeOnTile(mySprite2, tiles.getTileLocation(randint(1, 6), 6))
+            } else if (Math.percentChance(50)) {
+                mySprite2 = sprites.create(img`
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . 7 7 7 7 7 7 7 7 . . . . 
+                    . . . . 7 7 7 7 7 7 7 7 . . . . 
+                    . . . . 7 7 7 7 7 7 7 7 . . . . 
+                    `, SpriteKind.BossBomb)
+                mySprite2.lifespan = 500
+                tiles.placeOnTile(mySprite2, tiles.getTileLocation(randint(2, 3), 3))
+            } else if (Math.percentChance(30)) {
+                mySprite2 = sprites.create(img`
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . 7 7 7 7 7 7 7 7 . . . . 
+                    . . . . 7 7 7 7 7 7 7 7 . . . . 
+                    . . . . 7 7 7 7 7 7 7 7 . . . . 
+                    `, SpriteKind.BossBomb)
+                mySprite2.lifespan = 500
+                tiles.placeOnTile(mySprite2, tiles.getTileLocation(0, 1))
+            }
         }
     }
 })
