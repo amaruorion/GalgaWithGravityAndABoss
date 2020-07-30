@@ -156,7 +156,7 @@ function startGame () {
     color.setPalette(
     color.originalPalette
     )
-    mySprite3 = sprites.create(img`
+    Healing_Potion = sprites.create(img`
         d d d d d d d d d d d d d d d d 
         d b b b b b b b b b b b b b b c 
         d b b b b b b b b b b b b b b c 
@@ -174,7 +174,7 @@ function startGame () {
         d b b b b b b b b b b b 1 b b 1 
         d c c c c c c c c c c c c 1 1 c 
         `, SpriteKind.Healer)
-    mySprite3.setPosition(140, 8)
+    Healing_Potion.setPosition(140, 8)
     timebetweenSpawn = randint(500, 100)
     hiddenSprite = sprites.create(img`
         . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
@@ -434,7 +434,7 @@ function startGame () {
     mySprite.setFlag(SpriteFlag.StayInScreen, true)
     mySprite.ay = 350
     info.setLife(20)
-    mySprite3.setPosition(0, scene.screenHeight())
+    Healing_Potion.setPosition(1, scene.screenHeight())
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Boss, function (sprite, otherSprite) {
     sprite.destroy(effects.spray, 500)
@@ -604,7 +604,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 let HealerImages = 0
 let projectile: Sprite = null
 let BossAttackGenerator = 0
-let mySprite2: Sprite = null
+let BOMB: Sprite = null
 let Enemy_: Sprite = null
 let BossMade = false
 let Arrow2: Sprite = null
@@ -612,7 +612,7 @@ let enemyLife = 0
 let dagger: Sprite = null
 let hiddenSprite: Sprite = null
 let timebetweenSpawn = 0
-let mySprite3: Sprite = null
+let Healing_Potion: Sprite = null
 let TimeBetweenBossAttacking = 0
 let Waiting = false
 let HeroShoot = false
@@ -740,7 +740,7 @@ game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking
     if (BossMade) {
         if (statusbar.value < 26) {
             if (Math.percentChance(20)) {
-                mySprite2 = sprites.create(img`
+                BOMB = sprites.create(img`
                     . . . . . . . . . . . . . . . . 
                     . . . . . . . . . . . . . . . . 
                     . . . . . . . . . . . . . . . . 
@@ -758,10 +758,10 @@ game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking
                     . . . . 6 6 6 6 6 6 6 6 . . . . 
                     . . . . 6 6 6 6 6 6 6 6 . . . . 
                     `, SpriteKind.BossBomb)
-                mySprite2.lifespan = 500
-                tiles.placeOnTile(mySprite2, tiles.getTileLocation(randint(1, 6), 6))
+                BOMB.lifespan = 500
+                tiles.placeOnTile(BOMB, tiles.getTileLocation(randint(1, 6), 6))
             } else if (Math.percentChance(50)) {
-                mySprite2 = sprites.create(img`
+                BOMB = sprites.create(img`
                     . . . . . . . . . . . . . . . . 
                     . . . . . . . . . . . . . . . . 
                     . . . . . . . . . . . . . . . . 
@@ -779,10 +779,10 @@ game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking
                     . . . . 6 6 6 6 6 6 6 6 . . . . 
                     . . . . 6 6 6 6 6 6 6 6 . . . . 
                     `, SpriteKind.BossBomb)
-                mySprite2.lifespan = 500
-                tiles.placeOnTile(mySprite2, tiles.getTileLocation(randint(2, 3), 3))
+                BOMB.lifespan = 500
+                tiles.placeOnTile(BOMB, tiles.getTileLocation(randint(2, 3), 3))
             } else if (Math.percentChance(30)) {
-                mySprite2 = sprites.create(img`
+                BOMB = sprites.create(img`
                     . . . . . . . . . . . . . . . . 
                     . . . . . . . . . . . . . . . . 
                     . . . . . . . . . . . . . . . . 
@@ -800,8 +800,8 @@ game.onUpdateInterval(randint(TimeBetweenBossAttacking, TimeBetweenBossAttacking
                     . . . . 6 6 6 6 6 6 6 6 . . . . 
                     . . . . 6 6 6 6 6 6 6 6 . . . . 
                     `, SpriteKind.BossBomb)
-                mySprite2.lifespan = 500
-                tiles.placeOnTile(mySprite2, tiles.getTileLocation(0, 1))
+                BOMB.lifespan = 500
+                tiles.placeOnTile(BOMB, tiles.getTileLocation(0, 1))
             }
         }
     }
